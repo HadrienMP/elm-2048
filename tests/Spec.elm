@@ -15,22 +15,24 @@ import Test exposing (Test, describe, test)
 
 suite : Test
 suite =
-    describe "Déplacement vers la gauche"
-        [ lineParamTest "Aligne les tuiles sur le bord droit"
-            [ "0001 -> 1000"
-            , "0002 -> 2000"
-            , "1000 -> 1000"
-            , "0010 -> 1000"
-            , "0012 -> 1200"
-            ]
-        , lineParamTest "les tuiles égales s'ajoutent"
-            [ "0011 -> 2000"
-            , "2011 -> 2200"
-            ]
-        , lineParamTest "Des tuiles déjà fusionnées ne peuvent pas fusioner sur le même tour"
-            [ "1111 -> 2200"
-            , "2211 -> 4200"
-            , "1122 -> 2400"
+    describe "2048"
+        [ describe "Déplacement vers la gauche"
+            [ lineParamTest "Aligne les tuiles sur le bord droit"
+                [ "0002 -> 2000"
+                , "0004 -> 4000"
+                , "2000 -> 2000"
+                , "0020 -> 2000"
+                , "0024 -> 2400"
+                ]
+            , lineParamTest "les tuiles égales s'ajoutent"
+                [ "0022 -> 4000"
+                , "4022 -> 4400"
+                ]
+            , lineParamTest "Des tuiles déjà fusionnées ne peuvent pas fusioner sur le même tour"
+                [ "2222 -> 4400"
+                , "4422 -> 8400"
+                , "2244 -> 4800"
+                ]
             ]
         ]
 
