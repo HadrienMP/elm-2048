@@ -16,5 +16,8 @@
     "elm-review": "^2.9.1",
     "elm-tooling": "^1.10.0",
     "parcel": "^2.8.3"
+  },
+  "dependencies": {
+    "swipyjs": "^0.0.6"
   }
 }

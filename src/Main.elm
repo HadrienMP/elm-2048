@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg, main)
+port module Main exposing (Model, Msg, main)
 
 import Browser
 import Css
@@ -11,13 +11,16 @@ import Move
 import Random
 
 
+port swipe : (String -> msg) -> Sub msg
+
+
 main : Program () Model Msg
 main =
     Browser.element
         { init = init
         , view = view >> Html.toUnstyled
         , update = update
-        , subscriptions = always Sub.none
+        , subscriptions = always (swipe Swipe)
         }
 
 
@@ -56,6 +59,7 @@ addRandomTile grid =
 type Msg
     = Updated Grid.Grid
     | Moved Move.Move
+    | Swipe String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -69,6 +73,33 @@ update msg model =
         Moved move ->
             Grid.handle move model
                 |> (tuplize >> Tuple.mapSecond addRandomTile)
+
+        Swipe direction ->
+            let
+                maybeMove =
+                    case direction of
+                        "left" ->
+                            Just Move.Left
+
+                        "right" ->
+                            Just Move.Right
+
+                        "up" ->
+                            Just Move.Up
+
+                        "down" ->
+                            Just Move.Down
+
+                        _ ->
+                            Nothing
+            in
+            case maybeMove of
+                Just move ->
+                    Grid.handle move model
+                        |> (tuplize >> Tuple.mapSecond addRandomTile)
+
+                Nothing ->
+                    ( model, Cmd.none )
 
 
 tuplize : a -> ( a, a )
