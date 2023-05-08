@@ -1,4 +1,4 @@
-module Tile exposing (..)
+module Tile exposing (Tile, add, create, zero)
 
 
 type alias Tile =

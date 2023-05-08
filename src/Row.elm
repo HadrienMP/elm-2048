@@ -1,4 +1,4 @@
-module Row exposing (..)
+module Row exposing (Row, moveLeft, moveRight)
 
 import Tile exposing (Tile)
 
@@ -7,11 +7,19 @@ type alias Row =
     List Tile
 
 
-parse : String -> List Tile
-parse raw =
-    raw
-        |> String.split ""
-        |> List.map (String.toInt >> Maybe.withDefault 0 >> Tile.create)
+parseRec : String -> List Tile -> List Tile
+parseRec raw acc =
+    case String.uncons raw of
+        Just ( head, tail ) ->
+            Char.toCode head |> (-) 48 |> abs |> Tile.create |> List.singleton |> (++) acc |> parseRec tail
+
+        Nothing ->
+            acc
+
+
+moveRight : List Tile -> List Tile
+moveRight =
+    List.reverse >> moveLeft >> List.reverse
 
 
 moveLeft : Row -> Row

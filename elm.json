@@ -8,7 +8,6 @@
         "direct": {
             "elm/browser": "1.0.2",
             "elm/core": "1.0.5",
-            "pzp1997/assoc-list": "1.0.0",
             "rtfeldman/elm-css": "18.0.0"
         },
         "indirect": {
@@ -23,6 +22,7 @@
     },
     "test-dependencies": {
         "direct": {
+            "elm/parser": "1.1.0",
             "elm-explorations/test": "2.1.1"
         },
         "indirect": {

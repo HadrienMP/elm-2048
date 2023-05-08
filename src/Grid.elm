@@ -1,32 +1,69 @@
-module Grid exposing (..)
+module Grid exposing (Grid, handle, turnClockwise, turnCounterClockwise)
 
+import Move exposing (Move)
 import Row exposing (Row)
-import Tile exposing (Tile)
 
 
 type alias Grid =
     List Row
 
 
-type Move
-    = Left
-
-
-parseGrid : List String -> Grid
-parseGrid =
-    List.map Row.parse
-
-
-printGrid : Grid -> List String
-printGrid grid =
-    grid
-        |> List.map
-            (List.foldr
-                (\tile acc -> String.fromInt tile.face ++ acc)
-                ""
-            )
-
-
 handle : Move -> Grid -> Grid
-handle _ grid =
-    grid |> List.map Row.moveLeft
+handle move =
+    case move of
+        Move.Left ->
+            List.map Row.moveLeft
+
+        Move.Right ->
+            List.map Row.moveRight
+
+        Move.Down ->
+            turnClockwise >> List.map Row.moveLeft >> turnCounterClockwise
+
+        Move.Up ->
+            turnCounterClockwise >> List.map Row.moveLeft >> turnClockwise
+
+
+
+-- Turn grids
+
+
+turnCounterClockwise : Grid -> Grid
+turnCounterClockwise original =
+    original
+        |> List.foldr
+            (\row -> concat (row |> List.map List.singleton |> List.reverse))
+            []
+
+
+turnClockwise : Grid -> Grid
+turnClockwise original =
+    original
+        |> List.foldl
+            (\row -> concat (row |> List.map List.singleton))
+            []
+
+
+
+-- Concatenate two grids
+
+
+concat : Grid -> Grid -> Grid
+concat a b =
+    concatRec [] a b
+
+
+concatRec : Grid -> Grid -> Grid -> Grid
+concatRec acc a b =
+    case ( a, b ) of
+        ( aFirstRow :: aOthers, bFirstRow :: bOthers ) ->
+            concatRec (acc ++ [ aFirstRow ++ bFirstRow ]) aOthers bOthers
+
+        ( [], [] ) ->
+            acc
+
+        ( [], it ) ->
+            it
+
+        ( it, [] ) ->
+            it
