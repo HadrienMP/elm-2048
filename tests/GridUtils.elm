@@ -1,10 +1,9 @@
-module TestGrid exposing (..)
+module GridUtils exposing (..)
 
 import Expect
 import Grid
 import Row
 import Test
-import Tile
 
 
 
@@ -45,7 +44,7 @@ parse raw =
 
 parseRow : String -> Row.Row
 parseRow =
-    String.trim >> String.split "" >> List.map (String.toInt >> Maybe.withDefault -1 >> Tile.create)
+    String.trim >> String.split "" >> List.map (String.toInt >> Maybe.withDefault -1)
 
 
 
@@ -57,8 +56,8 @@ print grid =
     grid |> List.map printRow
 
 
-printRow : List Tile.Tile -> String
+printRow : Row.Row -> String
 printRow tiles =
     tiles
-        |> List.map (.face >> (+) 48 >> Char.fromCode)
+        |> List.map ((+) 48 >> Char.fromCode)
         |> List.foldr String.cons ""

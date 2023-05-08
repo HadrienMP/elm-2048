@@ -4,27 +4,21 @@ import Tile exposing (Tile)
 
 
 type alias Row =
-    List Tile
+    List Int
 
 
-parseRec : String -> List Tile -> List Tile
-parseRec raw acc =
-    case String.uncons raw of
-        Just ( head, tail ) ->
-            Char.toCode head |> (-) 48 |> abs |> Tile.create |> List.singleton |> (++) acc |> parseRec tail
-
-        Nothing ->
-            acc
-
-
-moveRight : List Tile -> List Tile
+moveRight : Row -> Row
 moveRight =
-    List.reverse >> moveLeft >> List.reverse
+    List.reverse
+        >> moveLeft
+        >> List.reverse
 
 
 moveLeft : Row -> Row
 moveLeft =
-    List.foldl alignLeft []
+    List.map Tile.create
+        >> List.foldl alignLeft []
+        >> List.map .face
 
 
 alignLeft : Tile -> List Tile -> List Tile
@@ -35,7 +29,7 @@ alignLeft tile alreadyMoved =
         }
 
 
-recAlignLeft : Tile -> { left : List Tile, right : List Tile } -> Row
+recAlignLeft : Tile -> { left : List Tile, right : List Tile } -> List Tile
 recAlignLeft toPlace { left, right } =
     case right of
         [] ->

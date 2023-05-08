@@ -2,15 +2,15 @@ module Grid_Test exposing (..)
 
 import Expect
 import Grid
+import GridUtils
 import Test exposing (..)
-import TestGrid
 
 
 suite : Test
 suite =
     describe "Grid"
         [ describe "Turn clockwise"
-            [ TestGrid.test "single line"
+            [ GridUtils.test "single line"
                 { given = "1234"
                 , when = Grid.turnClockwise
                 , then_ =
@@ -21,7 +21,7 @@ suite =
                     4
                     """
                 }
-            , TestGrid.test "small square"
+            , GridUtils.test "small square"
                 { given = """
                     12
                     34
@@ -32,7 +32,7 @@ suite =
                     42
                     """
                 }
-            , TestGrid.test "acceptance"
+            , GridUtils.test "acceptance"
                 { given = """
                     1234
                     5678
@@ -50,7 +50,7 @@ suite =
                 }
             ]
         , describe "Turn counter clockwise"
-            [ TestGrid.test "single line"
+            [ GridUtils.test "single line"
                 { given = """1234"""
                 , when = Grid.turnCounterClockwise
                 , then_ = """
@@ -60,7 +60,7 @@ suite =
                     1
                     """
                 }
-            , TestGrid.test "small square"
+            , GridUtils.test "small square"
                 { given = """
                     12
                     34
@@ -71,5 +71,46 @@ suite =
                     13
                     """
                 }
+            ]
+        , describe "available coordinates"
+            [ test "single square" <|
+                \_ ->
+                    "0"
+                        |> GridUtils.parse
+                        |> Grid.listAvailableSquares
+                        |> Expect.equal [ { x = 0, y = 0 } ]
+            , test "one line" <|
+                \_ ->
+                    "00"
+                        |> GridUtils.parse
+                        |> Grid.listAvailableSquares
+                        |> Expect.equal [ { x = 0, y = 0 }, { x = 1, y = 0 } ]
+            , test "small square" <|
+                \_ ->
+                    """
+                    00
+                    00
+                    """
+                        |> GridUtils.parse
+                        |> Grid.listAvailableSquares
+                        |> Expect.equal
+                            [ { x = 0, y = 0 }
+                            , { x = 1, y = 0 }
+                            , { x = 0, y = 1 }
+                            , { x = 1, y = 1 }
+                            ]
+            , test "small square with unavailable square" <|
+                \_ ->
+                    """
+                    01
+                    00
+                    """
+                        |> GridUtils.parse
+                        |> Grid.listAvailableSquares
+                        |> Expect.equal
+                            [ { x = 0, y = 0 }
+                            , { x = 0, y = 1 }
+                            , { x = 1, y = 1 }
+                            ]
             ]
         ]

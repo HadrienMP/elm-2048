@@ -2,10 +2,10 @@ module My2048_Test exposing (suite)
 
 import Expect
 import Grid
+import GridUtils
 import Move
 import Parser exposing ((|.), (|=))
 import Test exposing (Test, describe, test)
-import TestGrid
 
 
 
@@ -206,7 +206,7 @@ lineParamTest name params =
                                 Ok { input, move, expected } ->
                                     input
                                         |> Grid.handle move
-                                        |> TestGrid.expectEqual expected
+                                        |> GridUtils.expectEqual expected
 
                                 Err message ->
                                     Expect.fail message
@@ -219,9 +219,9 @@ parseTestName raw =
     Parser.run
         (Parser.succeed
             (\input move expected ->
-                { input = TestGrid.parse input
+                { input = GridUtils.parse input
                 , move = Move.parse move
-                , expected = TestGrid.parse expected
+                , expected = GridUtils.parse expected
                 }
             )
             |= gridParser

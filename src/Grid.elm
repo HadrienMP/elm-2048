@@ -1,11 +1,27 @@
-module Grid exposing (Grid, handle, turnClockwise, turnCounterClockwise)
+module Grid exposing (Coordinates, Grid, RandomTile, handle, init, listAvailableSquares, randomTileGenerator, turnClockwise, turnCounterClockwise)
 
 import Move exposing (Move)
+import Random
 import Row exposing (Row)
 
 
 type alias Grid =
     List Row
+
+
+
+-- Create
+
+
+init : Grid
+init =
+    0
+        |> List.repeat 4
+        |> List.repeat 4
+
+
+
+-- Handle
 
 
 handle : Move -> Grid -> Grid
@@ -67,3 +83,50 @@ concatRec acc a b =
 
         ( it, [] ) ->
             it
+
+
+
+--
+
+
+type alias RandomTile =
+    { face : Int, coordinates : Coordinates }
+
+
+randomTileGenerator : Grid -> Random.Generator RandomTile
+randomTileGenerator grid =
+    let
+        available =
+            grid |> listAvailableSquares
+    in
+    Random.pair (Random.int 1 2) (Random.int 0 (List.length available))
+        |> Random.map
+            (\( mult, index ) ->
+                { face = 2 * mult
+                , coordinates =
+                    available
+                        |> List.indexedMap Tuple.pair
+                        |> List.filter (Tuple.first >> (==) index)
+                        |> List.head
+                        |> Maybe.map Tuple.second
+                        |> Maybe.withDefault { x = 0, y = 0 }
+                }
+            )
+
+
+type alias Coordinates =
+    { x : Int, y : Int }
+
+
+listAvailableSquares : Grid -> List Coordinates
+listAvailableSquares grid =
+    grid
+        |> List.indexedMap Tuple.pair
+        |> List.map
+            (\( y, row ) ->
+                row
+                    |> List.indexedMap Tuple.pair
+                    |> List.filter (Tuple.second >> (==) 0)
+                    |> List.map (\( x, _ ) -> { x = x, y = y })
+            )
+        |> List.foldr (++) []
