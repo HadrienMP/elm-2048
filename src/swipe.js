@@ -4,8 +4,8 @@ var initialX = null;
 var initialY = null;
 
 export const setup = (app) => {
-    document.body.addEventListener("touchstart", startTouch, false);
-    document.body.addEventListener("touchmove", moveTouch, false);
+    document.addEventListener("touchstart", startTouch, false);
+    document.addEventListener("touchmove", moveTouch, false);
 
     function moveTouch(e) {
         if (initialX === null) {
@@ -48,5 +48,6 @@ export const setup = (app) => {
 function startTouch(e) {
     initialX = e.touches[0].clientX;
     initialY = e.touches[0].clientY;
+    e.preventDefault();
 };
 
