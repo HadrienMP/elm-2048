@@ -4,26 +4,24 @@ var initialX = null;
 var initialY = null;
 
 export const setup = (app) => {
-    document.addEventListener("touchstart", startTouch, false);
-    document.addEventListener("touchmove", moveTouch, false);
-
-    document.addEventListener("keydown", (e) => {
+    document.body.addEventListener("touchstart", startTouch, false);
+    document.body.addEventListener("touchmove", moveTouch, false);
+    document.addEventListener("keydown", e => {
         switch (e.code) {
-            case "ArrowUp":
-                app.ports.swipe.send('up');
-                break;
-            case "ArrowDown":
-                app.ports.swipe.send('down');
-                break;
-            case "ArrowLeft":
+            case 'ArrowLeft':
                 app.ports.swipe.send('left');
                 break;
-            case "ArrowRight":
+            case 'ArrowUp':
+                app.ports.swipe.send('up');
+                break;
+            case 'ArrowRight':
                 app.ports.swipe.send('right');
+                break;
+            case 'ArrowDown':
+                app.ports.swipe.send('down');
                 break;
 
         }
-
     });
 
     function moveTouch(e) {
