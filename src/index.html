@@ -2,26 +2,25 @@
 <html>
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="description" content="2048">
     <title>2048</title>
 </head>
 
-<body>
+<body style="overscroll-behavior: contain">
+    <div id="main">
     <div id="root"></div>
+    </div>
     <script type="module">
+        import * as stuff from "./swipe.js";
         import { Elm } from "./Main.elm";
-        import Swipy from 'swipyjs';
+
+        const root = document.getElementById("root");
         const app = Elm
             .Main
-            .init({ node: document.getElementById("root") });
+            .init({ node: root });
 
-        let swipy = new Swipy(document.getElementById('root'));
-
-        swipy.on('swipeleft', () => app.ports.swipe.send('left'));
-        swipy.on('swiperight', () => app.ports.swipe.send('right'));
-        swipy.on('swipeup', () => app.ports.swipe.send('up'));
-        swipy.on('swipedown', () => app.ports.swipe.send('down'));
+        stuff.setup(app);
     </script>
 </body>
 

@@ -18,6 +18,7 @@
     "parcel": "^2.8.3"
   },
   "dependencies": {
-    "swipyjs": "^0.0.6"
+    "swipyjs": "^0.0.6",
+    "zingtouch": "^1.0.6"
   }
 }

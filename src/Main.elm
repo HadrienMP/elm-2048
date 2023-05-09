@@ -113,7 +113,15 @@ tuplize a =
 
 view : Model -> Html Msg
 view grid =
-    Html.div [ css [ Css.displayFlex ] ]
+    Html.div
+        [ css
+            [ Css.display Css.inlineBlock
+            , Css.position Css.absolute
+            , Css.top <| Css.pct 50
+            , Css.left <| Css.pct 50
+            , Css.transform <| Css.translate2 (Css.pct -50) (Css.pct -50)
+            ]
+        ]
         [ Html.table
             [ css
                 [ Css.borderCollapse Css.collapse
@@ -146,50 +154,29 @@ view grid =
                     )
             )
         , Html.div
-            [ css
-                [ Css.position Css.relative
-                , Css.alignSelf Css.center
-                ]
+            [ css [ Css.displayFlex ]
             ]
             [ Html.button
                 [ Evts.onClick <| Moved Move.Up
-                , css
-                    [ Css.display Css.block
-                    , Css.width <| Css.px 60
-                    , Css.padding <| Css.px 10
-                    , Css.margin Css.auto
-                    ]
+                , css [ Css.flexGrow <| Css.num 1 ]
                 ]
                 [ Html.text "Up"
                 ]
             , Html.button
                 [ Evts.onClick <| Moved Move.Left
-                , css
-                    [ Css.display Css.inlineBlock
-                    , Css.width <| Css.px 60
-                    , Css.padding <| Css.px 10
-                    ]
+                , css [ Css.flexGrow <| Css.num 1 ]
                 ]
                 [ Html.text "Left"
                 ]
             , Html.button
                 [ Evts.onClick <| Moved Move.Right
-                , css
-                    [ Css.display Css.inlineBlock
-                    , Css.width <| Css.px 60
-                    , Css.padding <| Css.px 10
-                    ]
+                , css [ Css.flexGrow <| Css.num 1 ]
                 ]
                 [ Html.text "Right"
                 ]
             , Html.button
                 [ Evts.onClick <| Moved Move.Down
-                , css
-                    [ Css.display Css.block
-                    , Css.width <| Css.px 60
-                    , Css.padding <| Css.px 10
-                    , Css.margin Css.auto
-                    ]
+                , css [ Css.flexGrow <| Css.num 1 ]
                 ]
                 [ Html.text "Down"
                 ]
