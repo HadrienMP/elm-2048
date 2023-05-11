@@ -7,6 +7,25 @@ export const setup = (app) => {
     document.addEventListener("touchstart", startTouch, false);
     document.addEventListener("touchmove", moveTouch, false);
 
+    document.addEventListener("keydown", (e) => {
+        switch (e.code) {
+            case "ArrowUp":
+                app.ports.swipe.send('up');
+                break;
+            case "ArrowDown":
+                app.ports.swipe.send('down');
+                break;
+            case "ArrowLeft":
+                app.ports.swipe.send('left');
+                break;
+            case "ArrowRight":
+                app.ports.swipe.send('right');
+                break;
+
+        }
+
+    });
+
     function moveTouch(e) {
         if (initialX === null) {
             return;
