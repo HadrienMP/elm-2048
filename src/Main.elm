@@ -241,8 +241,12 @@ viewTile tile =
         ]
         [ Html.div []
             [ Html.text <|
-                String.replace "0" "" <|
-                    String.fromInt tile
+                case tile of
+                    0 ->
+                        ""
+
+                    _ ->
+                        String.fromInt tile
             ]
         ]
 
