@@ -2,6 +2,7 @@ module Grid exposing (Coordinates, Grid, RandomTile, handle, init, listAvailable
 
 import Move exposing (Move)
 import Random
+import Random.List
 import Row exposing (Row)
 
 
@@ -93,25 +94,24 @@ type alias RandomTile =
     { face : Int, coordinates : Coordinates }
 
 
-randomTileGenerator : Grid -> Random.Generator RandomTile
+randomTileGenerator : Grid -> Random.Generator (Maybe RandomTile)
 randomTileGenerator grid =
-    let
-        available =
-            grid |> listAvailableSquares
-    in
-    Random.pair (Random.int 1 2) (Random.int 0 (List.length available))
-        |> Random.map
-            (\( mult, index ) ->
-                { face = 2 * mult
-                , coordinates =
-                    available
-                        |> List.indexedMap Tuple.pair
-                        |> List.filter (Tuple.first >> (==) index)
-                        |> List.head
-                        |> Maybe.map Tuple.second
-                        |> Maybe.withDefault { x = 0, y = 0 }
-                }
-            )
+    pickEmptySquare grid
+        |> Random.pair randomFace
+        |> Random.map (\( face, maybeCoord ) -> maybeCoord |> Maybe.map (RandomTile face))
+
+
+pickEmptySquare : Grid -> Random.Generator (Maybe Coordinates)
+pickEmptySquare grid =
+    grid
+        |> listAvailableSquares
+        |> Random.List.choose
+        |> Random.map Tuple.first
+
+
+randomFace : Random.Generator Int
+randomFace =
+    Random.weighted ( 3, 2 ) [ ( 1, 4 ) ]
 
 
 type alias Coordinates =

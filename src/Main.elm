@@ -3,7 +3,6 @@ port module Main exposing (Model, Msg, main)
 import Browser
 import Color
 import Color.Convert
-import Color.Interpolate
 import Css
 import Grid
 import Hsv
@@ -39,20 +38,12 @@ type alias Model =
 init : () -> ( Model, Cmd Msg )
 init _ =
     Grid.init
-        |> (tuplize >> Tuple.mapSecond addRandomTile)
+        |> (toPair >> Tuple.mapSecond addRandomTile)
 
 
 addRandomTile : Grid.Grid -> Cmd Msg
 addRandomTile grid =
     Grid.randomTileGenerator grid
-        |> Random.map
-            (\tile ->
-                grid
-                    |> List.Extra.updateAt tile.coordinates.y
-                        (List.Extra.updateAt tile.coordinates.x
-                            (always tile.face)
-                        )
-            )
         |> Random.generate Updated
 
 
@@ -61,7 +52,7 @@ addRandomTile grid =
 
 
 type Msg
-    = Updated Grid.Grid
+    = Updated (Maybe Grid.RandomTile)
     | Moved Move.Move
     | Swipe String
 
@@ -69,14 +60,24 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Updated grid ->
-            ( grid
-            , Cmd.none
-            )
+        Updated maybeTile ->
+            case maybeTile of
+                Just tile ->
+                    ( model
+                        |> List.Extra.updateAt tile.coordinates.y
+                            (List.Extra.updateAt tile.coordinates.x
+                                (always tile.face)
+                            )
+                    , Cmd.none
+                    )
+
+                Nothing ->
+                    ( model, Cmd.none )
 
         Moved move ->
             Grid.handle move model
-                |> (tuplize >> Tuple.mapSecond addRandomTile)
+                |> toPair
+                |> Tuple.mapSecond addRandomTile
 
         Swipe direction ->
             let
@@ -100,14 +101,14 @@ update msg model =
             case maybeMove of
                 Just move ->
                     Grid.handle move model
-                        |> (tuplize >> Tuple.mapSecond addRandomTile)
+                        |> (toPair >> Tuple.mapSecond addRandomTile)
 
                 Nothing ->
                     ( model, Cmd.none )
 
 
-tuplize : a -> ( a, a )
-tuplize a =
+toPair : a -> ( a, a )
+toPair a =
     ( a, a )
 
 
@@ -125,6 +126,7 @@ view grid =
             , Css.bottom Css.zero
             , Css.left Css.zero
             , Css.right Css.zero
+            , Css.fontFamily Css.sansSerif
             ]
         ]
         [ Html.div
