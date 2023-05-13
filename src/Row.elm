@@ -26,6 +26,9 @@ recMoveLeft { zeros, summed, toSum } =
         0 :: tail ->
             recMoveLeft { zeros = zeros + 1, summed = summed, toSum = tail }
 
+        first :: 0 :: tail ->
+            recMoveLeft { zeros = zeros + 1, summed = summed, toSum = first :: tail }
+
         first :: second :: tail ->
             if first == second then
                 recMoveLeft { zeros = zeros + 1, summed = summed ++ [ first + second ], toSum = tail }

@@ -65,6 +65,12 @@ suite =
                   ----
                   4400
                   """
+                , """
+                  2002
+                  + L
+                  ----
+                  4000
+                  """
                 ]
             , lineParamTest "les tuiles ne peuvent s'ajouter que côte à côte"
                 [ """
