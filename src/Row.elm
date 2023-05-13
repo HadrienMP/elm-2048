@@ -1,5 +1,6 @@
 module Row exposing (Row, moveLeft, moveRight)
 
+import Html.Styled exposing (wbr)
 import Tile exposing (Tile)
 
 
@@ -15,32 +16,22 @@ moveRight =
 
 
 moveLeft : Row -> Row
-moveLeft =
-    List.map Tile.create
-        >> List.foldl alignLeft []
-        >> List.map .face
+moveLeft row =
+    recMoveLeft { zeros = 0, summed = [], toSum = row }
 
 
-alignLeft : Tile -> List Tile -> List Tile
-alignLeft tile alreadyMoved =
-    recAlignLeft tile
-        { left = []
-        , right = alreadyMoved ++ [ Tile.zero ]
-        }
+recMoveLeft : { zeros : Int, summed : List Int, toSum : List Int } -> Row
+recMoveLeft { zeros, summed, toSum } =
+    case toSum of
+        0 :: tail ->
+            recMoveLeft { zeros = zeros + 1, summed = summed, toSum = tail }
 
-
-recAlignLeft : Tile -> { left : List Tile, right : List Tile } -> List Tile
-recAlignLeft toPlace { left, right } =
-    case right of
-        [] ->
-            left
-
-        currentTile :: tail ->
-            if currentTile == Tile.zero then
-                left ++ (toPlace :: tail)
-
-            else if currentTile == toPlace && not currentTile.summed then
-                left ++ (Tile.add currentTile toPlace :: tail)
+        first :: second :: tail ->
+            if first == second then
+                recMoveLeft { zeros = zeros + 1, summed = summed ++ [ first + second ], toSum = tail }
 
             else
-                recAlignLeft toPlace { left = left ++ [ currentTile ], right = tail }
+                recMoveLeft { zeros = zeros, summed = summed ++ [ first ], toSum = second :: tail }
+
+        _ ->
+            summed ++ toSum ++ List.repeat zeros 0

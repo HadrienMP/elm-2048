@@ -66,6 +66,14 @@ suite =
                   4400
                   """
                 ]
+            , lineParamTest "les tuiles ne peuvent s'ajouter que côte à côte"
+                [ """
+                  2424 
+                  + L
+                  ----
+                  2424
+                  """
+                ]
             , lineParamTest "Des tuiles déjà fusionnées ne peuvent pas fusioner sur le même tour"
                 [ """
                   2222 
