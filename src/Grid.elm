@@ -1,9 +1,13 @@
-module Grid exposing (Coordinates, Grid, RandomTile, handle, init, listAvailableSquares, randomTileGenerator, turnClockwise, turnCounterClockwise)
+module Grid exposing (Coordinates, Grid, RandomTile, handle, init, listAvailableSquares, randomTileGenerator, turnClockwise, turnCounterClockwise, view)
 
+import Css
+import Html.Styled as Html exposing (Html)
+import Html.Styled.Attributes exposing (css)
 import Move exposing (Move)
 import Random
 import Random.List
 import Row exposing (Row)
+import Tile
 
 
 type alias Grid =
@@ -163,3 +167,59 @@ listAvailableSquares grid =
                     |> List.map (\( x, _ ) -> { x = x, y = y })
             )
         |> List.foldr (++) []
+
+
+
+-- View
+
+
+view : Grid -> Html msg
+view grid =
+    Html.div
+        [ css
+            [ Css.position Css.absolute
+            , Css.top Css.zero
+            , Css.bottom Css.zero
+            , Css.left Css.zero
+            , Css.right Css.zero
+            , Css.fontFamily Css.sansSerif
+            ]
+        ]
+        [ Html.div
+            [ css
+                [ Css.position Css.absolute
+                , Css.top <| Css.pct 50
+                , Css.left <| Css.pct 50
+                , Css.transform <| Css.translate2 (Css.pct -50) (Css.pct -50)
+                ]
+            ]
+            [ Html.div
+                [ css
+                    [ Css.borderRadius (Css.vmin 2)
+                    , Css.display Css.block
+                    , Css.maxWidth Css.fitContent
+                    , Css.margin Css.auto
+                    , Css.backgroundColor <| Css.hex "#ddd"
+                    , Css.padding <| Css.vmin 0.5
+                    ]
+                ]
+                (grid
+                    |> List.map
+                        (\row ->
+                            Html.div
+                                [ css
+                                    [ Css.displayFlex
+                                    ]
+                                ]
+                                (row
+                                    |> List.map
+                                        (\tile ->
+                                            Html.div [ css [ Css.padding (Css.vmin 0.6) ] ]
+                                                [ Tile.view tile
+                                                ]
+                                        )
+                                )
+                        )
+                )
+            ]
+        ]

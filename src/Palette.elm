@@ -4,7 +4,7 @@ import Browser
 import Css
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attr
-import Main
+import Tile
 
 
 main : Program () Model Msg
@@ -51,21 +51,12 @@ view : Model -> Html Msg
 view _ =
     List.range 1 12
         |> List.map ((^) 2)
-        |> List.map Main.viewTile
+        |> List.map Tile.view
         |> Html.div
             [ Attr.css
                 [ Css.displayFlex
                 , Css.flexWrap Css.wrap
                 , Css.property "gap" "0.8vmin"
                 , Css.fontFamily Css.sansSerif
-                , Css.property "text-shadow" <|
-                    "1.5px 0 0 #fff"
-                        ++ ", 1.5px 1.5px 0 #fff"
-                        ++ ", 0 1.5px 0 #fff"
-                        ++ ", -1.5px 1.5px 0 #fff"
-                        ++ ", -1.5px 0 0 #fff"
-                        ++ ", -1.5px -1.5px 0 #fff"
-                        ++ ", 0 -1.5px 0 #fff"
-                        ++ ", 1.5px -1.5px 0 #fff"
                 ]
             ]
