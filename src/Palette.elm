@@ -1,10 +1,9 @@
 module Palette exposing (Model, Msg, main)
 
 import Browser
-import Css
+import Grid
 import Html.Styled as Html exposing (Html)
-import Html.Styled.Attributes as Attr
-import Tile
+import List.Extra
 
 
 main : Program () Model Msg
@@ -51,12 +50,5 @@ view : Model -> Html Msg
 view _ =
     List.range 1 12
         |> List.map ((^) 2)
-        |> List.map Tile.view
-        |> Html.div
-            [ Attr.css
-                [ Css.displayFlex
-                , Css.flexWrap Css.wrap
-                , Css.property "gap" "0.8vmin"
-                , Css.fontFamily Css.sansSerif
-                ]
-            ]
+        |> List.Extra.groupsOf 4
+        |> Grid.view
