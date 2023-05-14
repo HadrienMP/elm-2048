@@ -56,5 +56,16 @@ view _ =
             [ Attr.css
                 [ Css.displayFlex
                 , Css.flexWrap Css.wrap
+                , Css.property "gap" "0.8vmin"
+                , Css.fontFamily Css.sansSerif
+                , Css.property "text-shadow" <|
+                    "1.5px 0 0 #fff"
+                        ++ ", 1.5px 1.5px 0 #fff"
+                        ++ ", 0 1.5px 0 #fff"
+                        ++ ", -1.5px 1.5px 0 #fff"
+                        ++ ", -1.5px 0 0 #fff"
+                        ++ ", -1.5px -1.5px 0 #fff"
+                        ++ ", 0 -1.5px 0 #fff"
+                        ++ ", 1.5px -1.5px 0 #fff"
                 ]
             ]

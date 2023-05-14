@@ -11,6 +11,8 @@ import Html.Styled.Events as Evts
 import List.Extra
 import Move
 import Random
+import Svg.Styled as Svg
+import Svg.Styled.Attributes as SvgAttr
 
 
 port swipe : (String -> msg) -> Sub msg
@@ -225,7 +227,6 @@ viewTile tile =
             , Css.displayFlex
             , Css.alignItems Css.center
             , Css.justifyContent Css.center
-            , Css.border3 (Css.px 1) Css.solid (Css.hex "#999")
             , Css.backgroundColor <| toCssColor backgroundColor
             , Css.color <|
                 toCssColor textColor
