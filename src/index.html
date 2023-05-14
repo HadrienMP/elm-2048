@@ -5,20 +5,27 @@
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="description" content="2048">
     <title>2048</title>
+    <style>
+        body {
+            overscroll-behavior: contain;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
 </head>
 
-<body scroll="no"> 
+<body scroll="no" style="overscroll-behavior: contain">
     <div id="main">
-    <div id="root"></div>
+        <div id="root"></div>
     </div>
     <script type="module">
         import * as stuff from "./swipe.js";
-        import { Elm } from "./Main.elm";
+        import {Elm} from "./Main.elm";
 
         const root = document.getElementById("root");
         const app = Elm
             .Main
-            .init({ node: root });
+            .init({node: root});
 
         stuff.setup(app);
     </script>
