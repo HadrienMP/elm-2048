@@ -11,8 +11,6 @@ import Html.Styled.Events as Evts
 import List.Extra
 import Move
 import Random
-import Svg.Styled as Svg
-import Svg.Styled.Attributes as SvgAttr
 
 
 port swipe : (String -> msg) -> Sub msg
@@ -234,6 +232,15 @@ viewTile tile =
             , Css.height <| Css.vmin 16
             , Css.textAlign Css.center
             , Css.fontSize <| Css.vmin 5
+            , Css.property "text-shadow" <|
+                "0.2vmin 0 0 #fff"
+                    ++ ", 0.2vmin 0.2vmin 0 #fff"
+                    ++ ", 0 0.2vmin 0 #fff"
+                    ++ ", -0.2vmin 0.2vmin 0 #fff"
+                    ++ ", -0.2vmin 0 0 #fff"
+                    ++ ", -0.2vmin -0.2vmin 0 #fff"
+                    ++ ", 0 -0.2vmin 0 #fff"
+                    ++ ", 0.2vmin -0.2vmin 0 #fff"
             ]
         ]
         [ Html.div []
