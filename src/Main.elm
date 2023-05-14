@@ -90,7 +90,7 @@ update msg model =
                         Cmd.none
 
                       else
-                        addRandomTile model
+                        addRandomTile next
                     )
 
                 Nothing ->

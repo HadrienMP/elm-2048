@@ -127,6 +127,6 @@ listAvailableSquares grid =
                 row
                     |> List.indexedMap Tuple.pair
                     |> List.filter (Tuple.second >> (==) 0)
-                    |> List.map (\( x, _ ) -> { x = x, y = List.length grid - y })
+                    |> List.map (\( x, _ ) -> { x = x, y = y })
             )
         |> List.foldr (++) []
