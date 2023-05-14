@@ -8,17 +8,20 @@ type Move
     | Up
 
 
-parse : String -> Move
+parse : String -> Maybe Move
 parse raw =
     case raw of
-        "R" ->
-            Right
+        "left" ->
+            Just Left
 
-        "D" ->
-            Down
+        "right" ->
+            Just Right
 
-        "U" ->
-            Up
+        "up" ->
+            Just Up
+
+        "down" ->
+            Just Down
 
         _ ->
-            Left
+            Nothing

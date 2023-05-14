@@ -234,7 +234,7 @@ parseTestName raw =
         (Parser.succeed
             (\input move expected ->
                 { input = GridUtils.parse input
-                , move = Move.parse move
+                , move = parseMove move
                 , expected = GridUtils.parse expected
                 }
             )
@@ -264,3 +264,19 @@ moveParser =
         |. Parser.spaces
         |= (Parser.chompUntil "\n" |> Parser.getChompedString)
         |. Parser.spaces
+
+
+parseMove : String -> Move.Move
+parseMove raw =
+    case raw of
+        "R" ->
+            Move.Right
+
+        "D" ->
+            Move.Down
+
+        "U" ->
+            Move.Up
+
+        _ ->
+            Move.Left

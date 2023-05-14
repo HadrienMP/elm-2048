@@ -3,7 +3,6 @@ port module Main exposing (Model, Msg, main)
 import Browser
 import Color
 import Color.Accessibility
-import Color.Convert
 import Css
 import Grid
 import Hsv
@@ -81,25 +80,7 @@ update msg model =
                 |> Tuple.mapSecond addRandomTile
 
         Swipe direction ->
-            let
-                maybeMove =
-                    case direction of
-                        "left" ->
-                            Just Move.Left
-
-                        "right" ->
-                            Just Move.Right
-
-                        "up" ->
-                            Just Move.Up
-
-                        "down" ->
-                            Just Move.Down
-
-                        _ ->
-                            Nothing
-            in
-            case maybeMove of
+            case Move.parse direction of
                 Just move ->
                     let
                         next =

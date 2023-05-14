@@ -1,8 +1,5 @@
 module Row exposing (Row, moveLeft, moveRight)
 
-import Html.Styled exposing (wbr)
-import Tile exposing (Tile)
-
 
 type alias Row =
     List Int
