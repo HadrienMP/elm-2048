@@ -36,13 +36,16 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    Grid.init
-        |> (toPair >> Tuple.mapSecond addRandomTile)
+    let
+        grid =
+            Grid.init
+    in
+    ( grid, addRandomTile 2 grid )
 
 
-addRandomTile : Grid.Grid -> Cmd Msg
-addRandomTile grid =
-    Grid.randomTileGenerator grid
+addRandomTile : Int -> Grid.Grid -> Cmd Msg
+addRandomTile number grid =
+    Grid.randomTileGenerator number grid
         |> Random.generate Updated
 
 
@@ -51,32 +54,33 @@ addRandomTile grid =
 
 
 type Msg
-    = Updated (Maybe Grid.RandomTile)
+    = Updated (List Grid.RandomTile)
     | Moved Move.Move
     | Swipe String
+
+
+insert : List Grid.RandomTile -> Grid.Grid -> Grid.Grid
+insert tiles grid =
+    case tiles of
+        [] ->
+            grid
+
+        tile :: tail ->
+            insert tail (List.Extra.updateAt tile.coordinates.y (List.Extra.updateAt tile.coordinates.x (always tile.face)) grid)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Updated maybeTile ->
-            case maybeTile of
-                Just tile ->
-                    ( model
-                        |> List.Extra.updateAt tile.coordinates.y
-                            (List.Extra.updateAt tile.coordinates.x
-                                (always tile.face)
-                            )
-                    , Cmd.none
-                    )
-
-                Nothing ->
-                    ( model, Cmd.none )
+        Updated tiles ->
+            ( insert tiles model
+            , Cmd.none
+            )
 
         Moved move ->
             Grid.handle move model
                 |> toPair
-                |> Tuple.mapSecond addRandomTile
+                |> Tuple.mapSecond (addRandomTile 1)
 
         Swipe direction ->
             case Move.parse direction of
@@ -90,7 +94,7 @@ update msg model =
                         Cmd.none
 
                       else
-                        addRandomTile next
+                        addRandomTile 1 next
                     )
 
                 Nothing ->
@@ -110,8 +114,7 @@ view : Model -> Html Msg
 view grid =
     Html.div
         [ css
-            [ Css.backgroundColor <| Css.hex "#eee"
-            , Css.position Css.absolute
+            [ Css.position Css.absolute
             , Css.top Css.zero
             , Css.bottom Css.zero
             , Css.left Css.zero
@@ -135,7 +138,6 @@ view grid =
                     , Css.margin Css.auto
                     , Css.backgroundColor <| Css.hex "#ddd"
                     , Css.padding <| Css.vmin 0.5
-                    , Css.border3 (Css.px 1) Css.solid (Css.hex "#999")
                     ]
                 ]
                 (grid
@@ -156,34 +158,6 @@ view grid =
                                 )
                         )
                 )
-            , Html.div
-                [ css [ Css.displayFlex ]
-                ]
-                [ Html.button
-                    [ Evts.onClick <| Moved Move.Up
-                    , css [ Css.flexGrow <| Css.num 1 ]
-                    ]
-                    [ Html.text "Up"
-                    ]
-                , Html.button
-                    [ Evts.onClick <| Moved Move.Left
-                    , css [ Css.flexGrow <| Css.num 1 ]
-                    ]
-                    [ Html.text "Left"
-                    ]
-                , Html.button
-                    [ Evts.onClick <| Moved Move.Right
-                    , css [ Css.flexGrow <| Css.num 1 ]
-                    ]
-                    [ Html.text "Right"
-                    ]
-                , Html.button
-                    [ Evts.onClick <| Moved Move.Down
-                    , css [ Css.flexGrow <| Css.num 1 ]
-                    ]
-                    [ Html.text "Down"
-                    ]
-                ]
             ]
         ]
 
@@ -215,7 +189,7 @@ viewTile tile =
 
         textColor =
             Color.Accessibility.maximumContrast backgroundColor [ Color.white, Color.black ]
-                |> Maybe.withDefault Color.black
+                |> Maybe.withDefault Color.white
     in
     Html.div
         [ css
@@ -231,16 +205,16 @@ viewTile tile =
             , Css.width <| Css.vmin 16
             , Css.height <| Css.vmin 16
             , Css.textAlign Css.center
-            , Css.fontSize <| Css.vmin 5
+            , Css.fontSize <| Css.vmin 6
             , Css.property "text-shadow" <|
-                "0.2vmin 0 0 #fff"
-                    ++ ", 0.2vmin 0.2vmin 0 #fff"
-                    ++ ", 0 0.2vmin 0 #fff"
-                    ++ ", -0.2vmin 0.2vmin 0 #fff"
-                    ++ ", -0.2vmin 0 0 #fff"
-                    ++ ", -0.2vmin -0.2vmin 0 #fff"
-                    ++ ", 0 -0.2vmin 0 #fff"
-                    ++ ", 0.2vmin -0.2vmin 0 #fff"
+                "0.16vmin 0 0 #fff"
+                    ++ ", 0.16vmin 0.16vmin 0 #fff"
+                    ++ ", 0 0.16vmin 0 #fff"
+                    ++ ", -0.16vmin 0.16vmin 0 #fff"
+                    ++ ", -0.16vmin 0 0 #fff"
+                    ++ ", -0.16vmin -0.16vmin 0 #fff"
+                    ++ ", 0 -0.16vmin 0 #fff"
+                    ++ ", 0.16vmin -0.16vmin 0 #fff"
             ]
         ]
         [ Html.div []

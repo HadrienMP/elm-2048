@@ -94,19 +94,52 @@ type alias RandomTile =
     { face : Int, coordinates : Coordinates }
 
 
-randomTileGenerator : Grid -> Random.Generator (Maybe RandomTile)
-randomTileGenerator grid =
-    pickEmptySquare grid
-        |> Random.pair randomFace
-        |> Random.map (\( face, maybeCoord ) -> maybeCoord |> Maybe.map (RandomTile face))
+randomTileGenerator : Int -> Grid -> Random.Generator (List RandomTile)
+randomTileGenerator number grid =
+    pickEmptySquares number grid
+        |> Random.andThen
+            (\tiles ->
+                tiles
+                    |> List.map (\coord -> randomFace |> Random.map (\face -> { face = face, coordinates = coord }))
+                    |> List.foldr
+                        (\generator acc ->
+                            acc
+                                |> Random.andThen
+                                    (\randomTiles ->
+                                        generator
+                                            |> Random.map (\randomTile -> randomTile :: randomTiles)
+                                    )
+                        )
+                        (Random.constant [])
+            )
 
 
-pickEmptySquare : Grid -> Random.Generator (Maybe Coordinates)
-pickEmptySquare grid =
+pickEmptySquares : Int -> Grid -> Random.Generator (List Coordinates)
+pickEmptySquares number grid =
     grid
         |> listAvailableSquares
-        |> Random.List.choose
-        |> Random.map Tuple.first
+        |> Tuple.pair []
+        |> Random.constant
+        |> stuff number
+        |> Random.map (Tuple.first >> List.filterMap identity)
+
+
+stuff :
+    Int
+    -> Random.Generator ( List (Maybe Coordinates), List Coordinates )
+    -> Random.Generator ( List (Maybe Coordinates), List Coordinates )
+stuff number toto =
+    if number == 0 then
+        toto
+
+    else
+        toto
+            |> Random.andThen
+                (\( previousPicks, available ) ->
+                    Random.List.choose available
+                        |> Random.map (\( pick, nextAvailable ) -> ( pick :: previousPicks, nextAvailable ))
+                )
+            |> stuff (number - 1)
 
 
 randomFace : Random.Generator Int
