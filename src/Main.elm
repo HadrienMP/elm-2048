@@ -3,9 +3,8 @@ port module Main exposing (Model, Msg, main, viewTile)
 import Browser
 import Color
 import Color.Accessibility
-import Css exposing (target)
+import Css
 import Grid
-import Hsv
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes exposing (css)
 import Html.Styled.Events as Evts
@@ -207,15 +206,6 @@ viewTile tile =
                         2048
                             |> logBase 2
                 in
-                -- { hue =
-                --     (tileRadical * 360 / targetRadical)
-                --         |> round
-                --         |> Debug.log ("Hue en degrés ? " ++ String.fromInt tile)
-                -- , saturation = 1
-                -- , value = 1
-                -- }
-                --     |> Hsv.toColor
-                --     |> Debug.log "color"
                 Color.fromHsla
                     { hue = tileRadical / targetRadical
                     , saturation = 1
