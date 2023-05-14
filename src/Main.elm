@@ -2,6 +2,7 @@ port module Main exposing (Model, Msg, main)
 
 import Browser
 import Color
+import Color.Accessibility
 import Color.Convert
 import Css
 import Grid
@@ -208,6 +209,32 @@ view grid =
 
 viewTile : Int -> Html Msg
 viewTile tile =
+    let
+        backgroundColor =
+            if tile == 0 then
+                Color.white
+
+            else
+                let
+                    tileRadical =
+                        tile |> toFloat |> logBase 2
+
+                    targetRadical =
+                        2048 |> logBase 2
+
+                    coef =
+                        tileRadical / targetRadical
+                in
+                { hue = 360 * coef |> floor
+                , saturation = 1
+                , value = 1
+                }
+                    |> Hsv.toColor
+
+        textColor =
+            Color.Accessibility.maximumContrast backgroundColor [ Color.white, Color.black ]
+                |> Maybe.withDefault Color.black
+    in
     Html.div
         [ css
             [ Css.height <| Css.pct 100
@@ -217,28 +244,8 @@ viewTile tile =
             , Css.alignItems Css.center
             , Css.justifyContent Css.center
             , Css.border3 (Css.px 1) Css.solid (Css.hex "#999")
-            , Css.property "background-color" <|
-                if tile == 0 then
-                    Color.Convert.hexToColor "#eee"
-                        |> Result.withDefault Color.black
-                        |> Color.Convert.colorToCssHsl
-
-                else
-                    let
-                        tileRadical =
-                            tile |> toFloat |> logBase 2
-
-                        targetRadical =
-                            2048 |> logBase 2
-
-                        coef =
-                            tileRadical / targetRadical
-                    in
-                    { hue = 360 * coef |> floor
-                    , saturation = 1
-                    , value = 1
-                    }
-                        |> Hsv.toCssString
+            , Css.backgroundColor <| toCssColor backgroundColor
+            , Css.color <| toCssColor textColor
             ]
         ]
         [ Html.div []
@@ -251,6 +258,12 @@ viewTile tile =
                         String.fromInt tile
             ]
         ]
+
+
+toCssColor : Color.Color -> Css.Color
+toCssColor =
+    Color.toRgba
+        >> (\it -> Css.rgba (it.red * 255 |> round) (it.green * 255 |> round) (it.blue * 255 |> round) it.alpha)
 
 
 

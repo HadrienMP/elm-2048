@@ -19,13 +19,13 @@ import Color
 import Css exposing (saturation)
 
 
-toCssString :
+toColor :
     { hue : Int
     , saturation : Float
     , value : Float
     }
-    -> String
-toCssString { hue, saturation, value } =
+    -> Color.Color
+toColor { hue, saturation, value } =
     let
         c =
             value * saturation
@@ -76,4 +76,4 @@ toCssString { hue, saturation, value } =
         b =
             bp + m
     in
-    Color.rgb r g b |> Color.toCssString
+    Color.rgb r g b
