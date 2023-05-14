@@ -1,9 +1,9 @@
-port module Main exposing (Model, Msg, main)
+port module Main exposing (Model, Msg, main, viewTile)
 
 import Browser
 import Color
 import Color.Accessibility
-import Css
+import Css exposing (target)
 import Grid
 import Hsv
 import Html.Styled as Html exposing (Html)
@@ -150,15 +150,7 @@ view grid =
                                 (row
                                     |> List.map
                                         (\tile ->
-                                            Html.div
-                                                [ css
-                                                    [ Css.width <| Css.vmin 16
-                                                    , Css.height <| Css.vmin 16
-                                                    , Css.textAlign Css.center
-                                                    , Css.fontSize <| Css.vmin 5
-                                                    , Css.padding <| Css.vmin 1
-                                                    ]
-                                                ]
+                                            Html.div [ css [ Css.padding (Css.vmin 0.6) ] ]
                                                 [ viewTile tile
                                                 ]
                                         )
@@ -197,7 +189,7 @@ view grid =
         ]
 
 
-viewTile : Int -> Html Msg
+viewTile : Int -> Html msg
 viewTile tile =
     let
         backgroundColor =
@@ -207,19 +199,29 @@ viewTile tile =
             else
                 let
                     tileRadical =
-                        tile |> toFloat |> logBase 2
+                        tile
+                            |> toFloat
+                            |> logBase 2
 
                     targetRadical =
-                        2048 |> logBase 2
-
-                    coef =
-                        tileRadical / targetRadical
+                        2048
+                            |> logBase 2
                 in
-                { hue = 360 * coef |> floor
-                , saturation = 1
-                , value = 1
-                }
-                    |> Hsv.toColor
+                -- { hue =
+                --     (tileRadical * 360 / targetRadical)
+                --         |> round
+                --         |> Debug.log ("Hue en degrés ? " ++ String.fromInt tile)
+                -- , saturation = 1
+                -- , value = 1
+                -- }
+                --     |> Hsv.toColor
+                --     |> Debug.log "color"
+                Color.fromHsla
+                    { hue = tileRadical / targetRadical
+                    , saturation = 1
+                    , lightness = 0.7
+                    , alpha = 1
+                    }
 
         textColor =
             Color.Accessibility.maximumContrast backgroundColor [ Color.white, Color.black ]
@@ -237,6 +239,10 @@ viewTile tile =
             , Css.backgroundColor <| toCssColor backgroundColor
             , Css.color <|
                 toCssColor textColor
+            , Css.width <| Css.vmin 16
+            , Css.height <| Css.vmin 16
+            , Css.textAlign Css.center
+            , Css.fontSize <| Css.vmin 5
             ]
         ]
         [ Html.div []
@@ -255,7 +261,3 @@ toCssColor : Color.Color -> Css.Color
 toCssColor =
     Color.toRgba
         >> (\it -> Css.rgba (it.red * 255 |> round) (it.green * 255 |> round) (it.blue * 255 |> round) it.alpha)
-
-
-
--- 2^x = 2048

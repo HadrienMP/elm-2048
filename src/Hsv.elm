@@ -30,16 +30,16 @@ toColor { hue, saturation, value } =
         c =
             value * saturation
 
-        x1 : Float
         x1 =
-            toFloat hue / 60 |> floor |> modBy 2 |> toFloat
+            hue // 60 |> modBy 2
 
-        x2 : Float
         x2 =
             abs (x1 - 1)
 
         x =
-            c * (1 - x2)
+            c
+                * toFloat (1 - x2)
+                |> Debug.log "X"
 
         m =
             value - c
