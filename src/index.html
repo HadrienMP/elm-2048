@@ -15,14 +15,12 @@
 </head>
 
 <body scroll="no" style="overscroll-behavior: contain">
-    <div id="main">
-        <div id="root"></div>
-    </div>
+    <main />
     <script type="module">
         import * as stuff from "./swipe.js";
         import {Elm} from "./Main.elm";
 
-        const root = document.getElementById("root");
+        const root = document.querySelector("main");
         const app = Elm
             .Main
             .init({node: root});

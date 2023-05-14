@@ -101,8 +101,17 @@ update msg model =
             in
             case maybeMove of
                 Just move ->
-                    Grid.handle move model
-                        |> (toPair >> Tuple.mapSecond addRandomTile)
+                    let
+                        next =
+                            Grid.handle move model
+                    in
+                    ( next
+                    , if next == model then
+                        Cmd.none
+
+                      else
+                        addRandomTile model
+                    )
 
                 Nothing ->
                     ( model, Cmd.none )
@@ -245,7 +254,8 @@ viewTile tile =
             , Css.justifyContent Css.center
             , Css.border3 (Css.px 1) Css.solid (Css.hex "#999")
             , Css.backgroundColor <| toCssColor backgroundColor
-            , Css.color <| toCssColor textColor
+            , Css.color <|
+                toCssColor textColor
             ]
         ]
         [ Html.div []
