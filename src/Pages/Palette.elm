@@ -1,6 +1,6 @@
 module Pages.Palette exposing (view)
 
-import Grid
+import Game.Grid as Grid
 import Html.Styled as Html exposing (Html)
 import List.Extra
 

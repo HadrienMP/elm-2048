@@ -1,10 +1,10 @@
 port module Pages.Game exposing (Model, Msg, init, main, subscriptions, update, view)
 
 import Browser
-import Grid
+import Game.Grid as Grid
+import Game.Move as Move
 import Html.Styled as Html exposing (Html)
 import List.Extra
-import Move
 import Random
 
 

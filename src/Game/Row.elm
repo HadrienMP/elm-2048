@@ -1,4 +1,4 @@
-module Row exposing (Row, moveLeft, moveRight)
+module Game.Row exposing (Row, moveLeft, moveRight)
 
 
 type alias Row =

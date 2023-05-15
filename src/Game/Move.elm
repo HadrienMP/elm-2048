@@ -1,4 +1,4 @@
-module Move exposing (Move(..), parse)
+module Game.Move exposing (Move(..), parse)
 
 
 type Move

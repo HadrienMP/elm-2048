@@ -1,13 +1,13 @@
-module Grid exposing (Coordinates, Grid, RandomTile, handle, init, listAvailableSquares, randomTileGenerator, turnClockwise, turnCounterClockwise, view)
+module Game.Grid exposing (Coordinates, Grid, RandomTile, handle, init, listAvailableSquares, randomTileGenerator, turnClockwise, turnCounterClockwise, view)
 
 import Css
+import Game.Move as Move exposing (Move)
+import Game.Row as Row exposing (Row)
+import Game.Tile as Tile
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes exposing (css)
-import Move exposing (Move)
 import Random
 import Random.List
-import Row exposing (Row)
-import Tile
 
 
 type alias Grid =

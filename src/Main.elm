@@ -2,7 +2,6 @@ port module Main exposing (Model, Msg, main)
 
 import Browser
 import Browser.Navigation
-import Grid
 import Html.Styled as Html exposing (Html)
 import Pages.Game
 import Pages.Palette

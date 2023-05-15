@@ -1,4 +1,4 @@
-module Tile exposing (..)
+module Game.Tile exposing (..)
 
 import Color
 import Color.Convert
