@@ -1,11 +1,14 @@
 port module Main exposing (Model, Msg, main)
 
 import Browser
+import Browser.Navigation
 import Grid
 import Html.Styled as Html exposing (Html)
-import List.Extra
-import Move
-import Random
+import Pages.Game
+import Pages.Palette
+import Routing
+import Shared
+import Url
 
 
 port swipe : (String -> msg) -> Sub msg
@@ -13,11 +16,13 @@ port swipe : (String -> msg) -> Sub msg
 
 main : Program () Model Msg
 main =
-    Browser.element
+    Browser.application
         { init = init
-        , view = view >> Html.toUnstyled
+        , view = view
         , update = update
-        , subscriptions = always (swipe Swipe)
+        , subscriptions = subscriptions
+        , onUrlChange = Shared.UrlChanged >> SharedMsg
+        , onUrlRequest = Shared.LinkClicked >> SharedMsg
         }
 
 
@@ -25,23 +30,42 @@ main =
 -- Init
 
 
+type Page
+    = Palette
+    | Game Pages.Game.Model
+
+
 type alias Model =
-    Grid.Grid
+    { shared : Shared.Model
+    , page : Page
+    }
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
+init : () -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
+init _ url key =
     let
-        grid =
-            Grid.init
+        ( shared, sharedCmd ) =
+            Shared.init { url = url, key = key }
+
+        ( page, pageCmd ) =
+            case shared.route of
+                Routing.Palette ->
+                    ( Palette, Cmd.none )
+
+                Routing.Game ->
+                    Pages.Game.init ()
+                        |> Tuple.mapBoth
+                            Game
+                            (Cmd.map GameMsg)
     in
-    ( grid, addRandomTile 2 grid )
-
-
-addRandomTile : Int -> Grid.Grid -> Cmd Msg
-addRandomTile number grid =
-    Grid.randomTileGenerator number grid
-        |> Random.generate Updated
+    ( { shared = shared
+      , page = page
+      }
+    , Cmd.batch
+        [ Cmd.map SharedMsg sharedCmd
+        , Cmd.map GotPageMsg pageCmd
+        ]
+    )
 
 
 
@@ -49,62 +73,70 @@ addRandomTile number grid =
 
 
 type Msg
-    = Updated (List Grid.RandomTile)
-    | Moved Move.Move
-    | Swipe String
+    = SharedMsg Shared.Msg
+    | GotPageMsg PageMsg
 
 
-insert : List Grid.RandomTile -> Grid.Grid -> Grid.Grid
-insert tiles grid =
-    case tiles of
-        [] ->
-            grid
-
-        tile :: tail ->
-            insert tail (List.Extra.updateAt tile.coordinates.y (List.Extra.updateAt tile.coordinates.x (always tile.face)) grid)
+type PageMsg
+    = GameMsg Pages.Game.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Updated tiles ->
-            ( insert tiles model
-            , Cmd.none
-            )
+        SharedMsg subMsg ->
+            Shared.update subMsg model.shared
+                |> Tuple.mapBoth
+                    (\next -> { model | shared = next })
+                    (Cmd.map SharedMsg)
 
-        Moved move ->
-            Grid.handle move model
-                |> toPair
-                |> Tuple.mapSecond (addRandomTile 1)
+        GotPageMsg pageMsg ->
+            let
+                ( page, pageCmd ) =
+                    case ( pageMsg, model.page ) of
+                        ( GameMsg subMsg, Game subModel ) ->
+                            Pages.Game.update subMsg subModel
+                                |> Tuple.mapBoth
+                                    Game
+                                    (Cmd.map GameMsg)
 
-        Swipe direction ->
-            case Move.parse direction of
-                Just move ->
-                    let
-                        next =
-                            Grid.handle move model
-                    in
-                    ( next
-                    , if next == model then
-                        Cmd.none
-
-                      else
-                        addRandomTile 1 next
-                    )
-
-                Nothing ->
-                    ( model, Cmd.none )
+                        _ ->
+                            ( model.page, Cmd.none )
+            in
+            ( { model | page = page }, Cmd.map GotPageMsg pageCmd )
 
 
-toPair : a -> ( a, a )
-toPair a =
-    ( a, a )
+
+-- Subscription
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    case model.page of
+        Game game ->
+            Pages.Game.subscriptions game |> Sub.map (GotPageMsg << GameMsg)
+
+        _ ->
+            Sub.none
 
 
 
 -- View
 
 
-view : Grid.Grid -> Html Msg
-view grid =
-    Grid.view grid
+view : Model -> Browser.Document Msg
+view model =
+    { title = "2048"
+    , body =
+        [ viewPage model.page |> Html.map GotPageMsg |> Html.toUnstyled ]
+    }
+
+
+viewPage : Page -> Html PageMsg
+viewPage model =
+    case model of
+        Palette ->
+            Pages.Palette.view ()
+
+        Game game ->
+            Pages.Game.view game |> Html.map GameMsg

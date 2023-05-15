@@ -1,52 +1,11 @@
-module Pages.Palette exposing (Model, Msg, main)
+module Pages.Palette exposing (view)
 
-import Browser
 import Grid
 import Html.Styled as Html exposing (Html)
 import List.Extra
 
 
-main : Program () Model Msg
-main =
-    Browser.element
-        { init = init
-        , view = view >> Html.toUnstyled
-        , update = update
-        , subscriptions = always Sub.none
-        }
-
-
-
--- Init
-
-
-type alias Model =
-    ()
-
-
-init : () -> ( Model, Cmd Msg )
-init _ =
-    ( (), Cmd.none )
-
-
-
--- Update
-
-
-type alias Msg =
-    ()
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
-update _ _ =
-    ( (), Cmd.none )
-
-
-
--- View
-
-
-view : Model -> Html Msg
+view : () -> Html msg
 view _ =
     List.range 1 12
         |> List.map ((^) 2)

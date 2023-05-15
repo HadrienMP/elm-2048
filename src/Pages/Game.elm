@@ -1,4 +1,4 @@
-port module Pages.Game exposing (Model, Msg, main)
+port module Pages.Game exposing (Model, Msg, init, main, subscriptions, update, view)
 
 import Browser
 import Grid
@@ -17,7 +17,7 @@ main =
         { init = init
         , view = view >> Html.toUnstyled
         , update = update
-        , subscriptions = always (swipe Swipe)
+        , subscriptions = subscriptions
         }
 
 
@@ -99,6 +99,15 @@ update msg model =
 toPair : a -> ( a, a )
 toPair a =
     ( a, a )
+
+
+
+-- subscriptions
+
+
+subscriptions : Model -> Sub Msg
+subscriptions =
+    always (swipe Swipe)
 
 
 
