@@ -1,7 +1,10 @@
 module Tile exposing (..)
 
-import Color
+import Browser.Navigation exposing (back)
+import Color exposing (white)
 import Color.Accessibility
+import Color.Convert
+import Color.Interpolate
 import Css
 import Css.Extra
 import Html.Styled as Html exposing (Html)
@@ -10,33 +13,6 @@ import Html.Styled.Attributes exposing (css)
 
 view : Int -> Html msg
 view tile =
-    let
-        backgroundColor =
-            if tile == 0 then
-                Color.white
-
-            else
-                let
-                    tileRadical =
-                        tile
-                            |> toFloat
-                            |> logBase 2
-
-                    targetRadical =
-                        2048
-                            |> logBase 2
-                in
-                Color.fromHsla
-                    { hue = tileRadical / targetRadical
-                    , saturation = 1
-                    , lightness = 0.7
-                    , alpha = 1
-                    }
-
-        textColor =
-            Color.Accessibility.maximumContrast backgroundColor [ Color.white, Color.black ]
-                |> Maybe.withDefault Color.white
-    in
     Html.div
         [ css
             [ Css.height <| Css.pct 100
@@ -45,22 +21,13 @@ view tile =
             , Css.displayFlex
             , Css.alignItems Css.center
             , Css.justifyContent Css.center
-            , Css.backgroundColor <| Css.Extra.toCssColor backgroundColor
-            , Css.color <|
-                Css.Extra.toCssColor textColor
-            , Css.width <| Css.vmin 16
-            , Css.height <| Css.vmin 16
+            , Css.backgroundColor <| Css.Extra.toCssColor <| backgroundColor tile
+            , Css.color <| Css.hex "#fff"
+            , Css.width <| Css.vmin 20
+            , Css.height <| Css.vmin 20
             , Css.textAlign Css.center
-            , Css.fontSize <| Css.vmin 6
-            , Css.property "text-shadow" <|
-                "0.16vmin 0 0 #fff"
-                    ++ ", 0.16vmin 0.16vmin 0 #fff"
-                    ++ ", 0 0.16vmin 0 #fff"
-                    ++ ", -0.16vmin 0.16vmin 0 #fff"
-                    ++ ", -0.16vmin 0 0 #fff"
-                    ++ ", -0.16vmin -0.16vmin 0 #fff"
-                    ++ ", 0 -0.16vmin 0 #fff"
-                    ++ ", 0.16vmin -0.16vmin 0 #fff"
+            , Css.fontSize <| Css.vmin 8
+            , Css.fontWeight Css.bold
             ]
         ]
         [ Html.div []
@@ -73,3 +40,54 @@ view tile =
                         String.fromInt tile
             ]
         ]
+
+
+backgroundColor : Int -> Color.Color
+backgroundColor tile =
+    if tile == 0 then
+        Color.white
+
+    else
+        let
+            tileRadical =
+                tile
+                    |> toFloat
+                    |> logBase 2
+                    |> subtract 1
+                    |> round
+
+            stuff =
+                tileRadical |> modBy 3 |> toFloat |> (\a -> a / 3)
+        in
+        case tileRadical // 3 of
+            0 ->
+                Color.Interpolate.interpolate Color.Interpolate.RGB
+                    (Color.Convert.hexToColor "07c8f9" |> Result.withDefault Color.red)
+                    (Color.Convert.hexToColor "0d41e1" |> Result.withDefault Color.red)
+                    stuff
+
+            1 ->
+                Color.Interpolate.interpolate Color.Interpolate.RGB
+                    (Color.Convert.hexToColor "f20089" |> Result.withDefault Color.red)
+                    (Color.Convert.hexToColor "8900f2" |> Result.withDefault Color.red)
+                    stuff
+
+            2 ->
+                Color.Interpolate.interpolate Color.Interpolate.RGB
+                    (Color.Convert.hexToColor "ff8500" |> Result.withDefault Color.red)
+                    (Color.Convert.hexToColor "ff0000" |> Result.withDefault Color.red)
+                    stuff
+
+            3 ->
+                Color.Interpolate.interpolate Color.Interpolate.RGB
+                    (Color.Convert.hexToColor "52b69a" |> Result.withDefault Color.red)
+                    (Color.Convert.hexToColor "168aad" |> Result.withDefault Color.red)
+                    stuff
+
+            _ ->
+                Color.black
+
+
+subtract : number -> number -> number
+subtract b a =
+    a - b
