@@ -26,6 +26,15 @@ view tile =
             , Css.textAlign Css.center
             , Css.fontSize <| Css.vmin 8
             , Css.fontWeight Css.bold
+            , Css.property
+                "text-shadow"
+                "0 -0.3vmin  0px rgba(0,0,0,0.2)"
+            , case tile of
+                0 ->
+                    Css.property "box-shadow" "inset 0 0.6vmin 0 #ccc"
+
+                _ ->
+                    Css.property "box-shadow" "inset 0 0.3vmin 0 #bbb"
             ]
         ]
         [ Html.div []

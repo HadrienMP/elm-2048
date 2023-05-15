@@ -196,11 +196,14 @@ view grid =
             [ Html.div
                 [ css
                     [ Css.borderRadius (Css.vmin 2)
-                    , Css.display Css.block
+                    , Css.displayFlex
+                    , Css.flexDirection Css.column
+                    , Css.property "gap" "1vmin"
                     , Css.maxWidth Css.fitContent
                     , Css.margin Css.auto
                     , Css.backgroundColor <| Css.hex "#ddd"
-                    , Css.padding <| Css.vmin 0.5
+                    , Css.padding2 (Css.vmin 1.6) (Css.vmin 2)
+                    , Css.boxShadow4 Css.zero (Css.vmin 0.6) Css.zero (Css.hex "#ccc")
                     ]
                 ]
                 (grid
@@ -209,15 +212,16 @@ view grid =
                             Html.div
                                 [ css
                                     [ Css.displayFlex
+                                    , Css.property "gap" "1.6vmin"
                                     ]
                                 ]
                                 (row
-                                    |> List.map
-                                        (\tile ->
-                                            Html.div [ css [ Css.padding (Css.vmin 0.6) ] ]
-                                                [ Tile.view tile
-                                                ]
-                                        )
+                                    |> List.map Tile.view
+                                 -- (\tile ->
+                                 --     Html.div [ css [ Css.padding (Css.vmin 0.6) ] ]
+                                 --         [ Tile.view tile
+                                 --         ]
+                                 -- )
                                 )
                         )
                 )
