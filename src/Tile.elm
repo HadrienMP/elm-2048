@@ -1,8 +1,6 @@
 module Tile exposing (..)
 
-import Browser.Navigation exposing (back)
-import Color exposing (white)
-import Color.Accessibility
+import Color
 import Color.Convert
 import Color.Interpolate
 import Css
