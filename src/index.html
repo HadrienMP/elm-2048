@@ -18,13 +18,10 @@
     <main />
     <script type="module">
         import * as stuff from "./swipe.js";
-        import {Elm} from "./Main.elm";
+        import {Elm} from "./Pages/Game.elm";
 
         const root = document.querySelector("main");
-        const app = Elm
-            .Main
-            .init({node: root});
-
+        const app = Elm.Pages.Game.init({node: root});
         stuff.setup(app);
     </script>
 </body>

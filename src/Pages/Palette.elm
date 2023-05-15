@@ -1,4 +1,4 @@
-module Palette exposing (Model, Msg, main)
+module Pages.Palette exposing (Model, Msg, main)
 
 import Browser
 import Grid
