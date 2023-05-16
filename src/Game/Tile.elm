@@ -28,13 +28,13 @@ view tile =
             , Css.fontWeight Css.bold
             , Css.property
                 "text-shadow"
-                "0 -0.3vmin  0px rgba(0,0,0,0.2)"
+                "0 -0.5vmin  0px rgba(0,0,0,0.2)"
             , case tile of
                 0 ->
-                    Css.property "box-shadow" "inset 0 0.6vmin 0 #ccc"
+                    Css.property "box-shadow" "inset 0 1.2vmin 0 #ccc"
 
                 _ ->
-                    Css.property "box-shadow" "inset 0 0.3vmin 0 #bbb"
+                    Css.property "box-shadow" "inset 0 0.7vmin 0.4vmin #bbb"
             ]
         ]
         [ Html.div []

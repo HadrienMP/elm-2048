@@ -203,7 +203,7 @@ view grid =
                     , Css.margin Css.auto
                     , Css.backgroundColor <| Css.hex "#ddd"
                     , Css.padding2 (Css.vmin 1.6) (Css.vmin 2)
-                    , Css.boxShadow4 Css.zero (Css.vmin 0.6) Css.zero (Css.hex "#ccc")
+                    , Css.boxShadow4 Css.zero (Css.vmin 1.2) Css.zero (Css.hex "#ccc")
                     ]
                 ]
                 (grid
@@ -215,14 +215,7 @@ view grid =
                                     , Css.property "gap" "1.6vmin"
                                     ]
                                 ]
-                                (row
-                                    |> List.map Tile.view
-                                 -- (\tile ->
-                                 --     Html.div [ css [ Css.padding (Css.vmin 0.6) ] ]
-                                 --         [ Tile.view tile
-                                 --         ]
-                                 -- )
-                                )
+                                (row |> List.map Tile.view)
                         )
                 )
             ]
