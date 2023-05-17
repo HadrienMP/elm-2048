@@ -177,46 +177,26 @@ view : Grid -> Html msg
 view grid =
     Html.div
         [ css
-            [ Css.position Css.absolute
-            , Css.top Css.zero
-            , Css.bottom Css.zero
-            , Css.left Css.zero
-            , Css.right Css.zero
-            , Css.fontFamily Css.sansSerif
+            [ Css.borderRadius (Css.vmin 2)
+            , Css.displayFlex
+            , Css.flexDirection Css.column
+            , Css.property "gap" "1vmin"
+            , Css.maxWidth Css.fitContent
+            , Css.margin Css.auto
+            , Css.backgroundColor <| Css.hex "#ddd"
+            , Css.padding2 (Css.vmin 1.6) (Css.vmin 2)
+            , Css.boxShadow4 Css.zero (Css.vmin 1.2) Css.zero (Css.hex "#ccc")
             ]
         ]
-        [ Html.div
-            [ css
-                [ Css.position Css.absolute
-                , Css.top <| Css.pct 50
-                , Css.left <| Css.pct 50
-                , Css.transform <| Css.translate2 (Css.pct -50) (Css.pct -50)
-                ]
-            ]
-            [ Html.div
-                [ css
-                    [ Css.borderRadius (Css.vmin 2)
-                    , Css.displayFlex
-                    , Css.flexDirection Css.column
-                    , Css.property "gap" "1vmin"
-                    , Css.maxWidth Css.fitContent
-                    , Css.margin Css.auto
-                    , Css.backgroundColor <| Css.hex "#ddd"
-                    , Css.padding2 (Css.vmin 1.6) (Css.vmin 2)
-                    , Css.boxShadow4 Css.zero (Css.vmin 1.2) Css.zero (Css.hex "#ccc")
-                    ]
-                ]
-                (grid
-                    |> List.map
-                        (\row ->
-                            Html.div
-                                [ css
-                                    [ Css.displayFlex
-                                    , Css.property "gap" "1.6vmin"
-                                    ]
-                                ]
-                                (row |> List.map Tile.view)
-                        )
+        (grid
+            |> List.map
+                (\row ->
+                    Html.div
+                        [ css
+                            [ Css.displayFlex
+                            , Css.property "gap" "1.6vmin"
+                            ]
+                        ]
+                        (row |> List.map Tile.view)
                 )
-            ]
-        ]
+        )

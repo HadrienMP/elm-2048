@@ -2,7 +2,9 @@ port module Main exposing (Model, Msg, main)
 
 import Browser
 import Browser.Navigation
+import Css
 import Html.Styled as Html exposing (Html)
+import Html.Styled.Attributes as Attr
 import Pages.Game
 import Pages.Palette
 import Routing
@@ -127,7 +129,23 @@ view : Model -> Browser.Document Msg
 view model =
     { title = "2048"
     , body =
-        [ viewPage model.page |> Html.map GotPageMsg |> Html.toUnstyled ]
+        Html.div
+            [ Attr.css
+                [ Css.position Css.absolute
+                , Css.top <| Css.pct 50
+                , Css.left <| Css.pct 50
+                , Css.transform <| Css.translate2 (Css.pct -50) (Css.pct -50)
+                , Css.fontFamily Css.sansSerif
+                ]
+            ]
+            [ Html.div
+                []
+                [ Html.h1 [] [ Html.text "2048" ] ]
+            , viewPage model.page
+                |> Html.map GotPageMsg
+            ]
+            |> Html.toUnstyled
+            |> List.singleton
     }
 
 
