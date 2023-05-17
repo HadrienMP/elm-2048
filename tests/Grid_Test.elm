@@ -1,7 +1,7 @@
 module Grid_Test exposing (..)
 
 import Expect
-import Grid
+import Game.Grid as Grid
 import GridUtils
 import Test exposing (..)
 

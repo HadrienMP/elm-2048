@@ -1,9 +1,9 @@
 module My2048_Test exposing (suite)
 
 import Expect
-import Grid
+import Game.Grid as Grid
+import Game.Move as Move
 import GridUtils
-import Move
 import Parser exposing ((|.), (|=))
 import Test exposing (Test, describe, test)
 

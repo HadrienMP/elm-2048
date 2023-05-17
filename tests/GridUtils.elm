@@ -1,8 +1,8 @@
 module GridUtils exposing (..)
 
 import Expect
-import Grid
-import Row
+import Game.Grid as Grid
+import Game.Row as Row
 import Test
 
 
