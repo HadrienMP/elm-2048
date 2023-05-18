@@ -39,8 +39,8 @@ init _ =
 
 
 addRandomTile : Int -> Grid.Grid -> Cmd Msg
-addRandomTile number grid =
-    Grid.randomTileGenerator number grid
+addRandomTile face grid =
+    Grid.randomTileGenerator face grid
         |> Random.generate Updated
 
 
@@ -61,7 +61,13 @@ insert tiles grid =
             grid
 
         tile :: tail ->
-            insert tail (List.Extra.updateAt tile.coordinates.y (List.Extra.updateAt tile.coordinates.x (always tile.face)) grid)
+            insert tail
+                (List.Extra.updateAt tile.coordinates.y
+                    (List.Extra.updateAt tile.coordinates.x
+                        (always tile.face)
+                    )
+                    grid
+                )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
