@@ -1,13 +1,13 @@
 module Game.Grid exposing (Coordinates, Grid, RandomTile, handle, init, listAvailableSquares, randomTileGenerator, turnClockwise, turnCounterClockwise, view)
 
 import Css
+import Extra.Random
 import Game.Move as Move exposing (Move)
 import Game.Row as Row exposing (Row)
 import Game.Tile as Tile
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes exposing (css)
 import Random
-import Random.List
 
 
 type alias Grid =
@@ -95,64 +95,18 @@ concatRec acc a b =
 
 
 type alias RandomTile =
-    { face : Int, coordinates : Coordinates }
-
-
-randomTileGenerator : Int -> Grid -> Random.Generator (List RandomTile)
-randomTileGenerator number grid =
-    pickEmptySquares number grid
-        |> Random.andThen
-            (\tiles ->
-                tiles
-                    |> List.map (\coord -> randomFace |> Random.map (\face -> { face = face, coordinates = coord }))
-                    |> List.foldr
-                        (\generator acc ->
-                            acc
-                                |> Random.andThen
-                                    (\randomTiles ->
-                                        generator
-                                            |> Random.map (\randomTile -> randomTile :: randomTiles)
-                                    )
-                        )
-                        (Random.constant [])
-            )
-
-
-pickEmptySquares : Int -> Grid -> Random.Generator (List Coordinates)
-pickEmptySquares number grid =
-    grid
-        |> listAvailableSquares
-        |> Tuple.pair []
-        |> Random.constant
-        |> stuff number
-        |> Random.map (Tuple.first >> List.filterMap identity)
-
-
-stuff :
-    Int
-    -> Random.Generator ( List (Maybe Coordinates), List Coordinates )
-    -> Random.Generator ( List (Maybe Coordinates), List Coordinates )
-stuff number toto =
-    if number == 0 then
-        toto
-
-    else
-        toto
-            |> Random.andThen
-                (\( previousPicks, available ) ->
-                    Random.List.choose available
-                        |> Random.map (\( pick, nextAvailable ) -> ( pick :: previousPicks, nextAvailable ))
-                )
-            |> stuff (number - 1)
-
-
-randomFace : Random.Generator Int
-randomFace =
-    Random.weighted ( 3, 2 ) [ ( 1, 4 ) ]
+    { coordinates : Coordinates, face : Int }
 
 
 type alias Coordinates =
     { x : Int, y : Int }
+
+
+randomTileGenerator : Int -> Grid -> Random.Generator (List RandomTile)
+randomTileGenerator number grid =
+    listAvailableSquares grid
+        |> Extra.Random.chooseN number
+        |> Extra.Random.traverse affectRandomFace
 
 
 listAvailableSquares : Grid -> List Coordinates
@@ -167,6 +121,12 @@ listAvailableSquares grid =
                     |> List.map (\( x, _ ) -> { x = x, y = y })
             )
         |> List.foldr (++) []
+
+
+affectRandomFace : Coordinates -> Random.Generator RandomTile
+affectRandomFace coordinates =
+    Random.weighted ( 3, 2 ) [ ( 1, 4 ) ]
+        |> Random.map (\face -> { face = face, coordinates = coordinates })
 
 
 
