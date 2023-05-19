@@ -8,6 +8,7 @@ import Game.Tile as Tile
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes exposing (css)
 import Random
+import UI.Style
 
 
 type alias Grid =
@@ -137,8 +138,8 @@ view : Grid -> Html msg
 view grid =
     Html.div
         [ css
-            [ Css.borderRadius (Css.vmin 2)
-            , Css.displayFlex
+            [ Css.displayFlex
+            , UI.Style.roundedCorners
             , Css.flexDirection Css.column
             , Css.property "gap" "1vmin"
             , Css.maxWidth Css.fitContent

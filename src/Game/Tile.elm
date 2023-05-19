@@ -7,6 +7,7 @@ import Css
 import Css.Extra
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes exposing (css)
+import UI.Style
 
 
 view : Int -> Html msg
@@ -15,14 +16,14 @@ view tile =
         [ css
             [ Css.height <| Css.pct 100
             , Css.width <| Css.pct 100
-            , Css.borderRadius <| Css.vmin 2
+            , UI.Style.roundedCorners
             , Css.displayFlex
             , Css.alignItems Css.center
             , Css.justifyContent Css.center
             , Css.backgroundColor <| Css.Extra.toCssColor <| backgroundColor tile
             , Css.color <| Css.hex "#fff"
-            , Css.width <| Css.vmin 20
-            , Css.height <| Css.vmin 20
+            , Css.width <| Css.vmin 18
+            , Css.height <| Css.vmin 18
             , Css.textAlign Css.center
             , Css.fontSize <| Css.vmin 8
             , Css.fontWeight Css.bold

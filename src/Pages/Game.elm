@@ -1,11 +1,15 @@
 port module Pages.Game exposing (Model, Msg, init, main, subscriptions, update, view)
 
 import Browser
+import Css
 import Game.Grid as Grid
 import Game.Move as Move
 import Html.Styled as Html exposing (Html)
+import Html.Styled.Attributes as Attr
 import List.Extra
 import Random
+import UI.AppTheme
+import UI.Style
 
 
 port swipe : (String -> msg) -> Sub msg
@@ -122,4 +126,35 @@ subscriptions =
 
 view : Grid.Grid -> Html Msg
 view grid =
-    Grid.view grid
+    Html.div
+        [ Attr.css
+            [ Css.displayFlex
+            , Css.flexDirection Css.column
+            , Css.property "gap" "2vmin"
+            ]
+        ]
+        [ Html.h1
+            [ Attr.css <|
+                [ Css.backgroundColor <|
+                    UI.AppTheme.toCss UI.AppTheme.default.solid.surface
+                , Css.padding <| Css.vmin 2
+                , Css.fontSize <| Css.vmin 6
+                , Css.margin Css.zero
+                , UI.Style.roundedCorners
+                , Css.color <| UI.AppTheme.toCss UI.AppTheme.default.on.surface
+                , Css.textShadow4
+                    Css.zero
+                    (Css.vmin -0.5)
+                    Css.zero
+                    (Css.rgba 0 0 0 0.2)
+                , Css.boxShadow4 Css.zero
+                    (Css.vmin 0.6)
+                    Css.zero
+                    (UI.AppTheme.toCss UI.AppTheme.default.solid.shadow)
+                , Css.paddingTop <| Css.vmin 2.6
+                ]
+            ]
+            [ Html.text "2048"
+            ]
+        , Grid.view grid
+        ]

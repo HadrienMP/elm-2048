@@ -2,6 +2,7 @@ module UI.AppTheme exposing (..)
 
 import Color
 import Color.Convert
+import Css
 
 
 type alias Colors =
@@ -12,14 +13,14 @@ type alias Colors =
 
 
 type alias Theme =
-    { below : Colors
+    { solid : Colors
     , on : Colors
     }
 
 
 default : Theme
 default =
-    { below =
+    { solid =
         { shadow = hex "ccc"
         , surface = hex "ddd"
         , background = Color.white
@@ -35,3 +36,14 @@ default =
 hex : String -> Color.Color
 hex =
     Color.Convert.hexToColor >> Result.withDefault Color.purple
+
+
+toCss : Color.Color -> Css.Color
+toCss =
+    Color.toRgba
+        >> (\{ red, green, blue, alpha } ->
+                Css.rgba (red * 255 |> round)
+                    (green * 255 |> round)
+                    (blue * 255 |> round)
+                    alpha
+           )
