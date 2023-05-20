@@ -7,7 +7,7 @@ import Css
 import Css.Animations
 import Css.Extra
 import Html.Styled as Html exposing (Html)
-import Html.Styled.Attributes exposing (css)
+import Html.Styled.Attributes as Attr exposing (css)
 import UI.Style
 
 
@@ -35,7 +35,8 @@ newTile value =
 view : Tile -> Html msg
 view tile =
     Html.div
-        [ css <|
+        [ Attr.class "tile"
+        , css <|
             [ Css.height <| Css.pct 100
             , Css.width <| Css.pct 100
             , UI.Style.roundedCorners
@@ -47,7 +48,7 @@ view tile =
             , Css.width <| Css.vmin 18
             , Css.height <| Css.vmin 18
             , Css.textAlign Css.center
-            , Css.fontSize <| Css.vmin 8
+            , Css.fontSize <| Css.vmin 7
             , Css.fontWeight Css.bold
             , Css.property
                 "text-shadow"
@@ -57,40 +58,42 @@ view tile =
                     Css.property "box-shadow" "inset 0 1.2vmin 0 #ccc"
 
                 _ ->
-                    Css.property "box-shadow" "inset 0 0.7vmin 0.4vmin #bbb"
+                    Css.property "box-shadow" "inset 0 0.5vmin 0 rgba(0,0,0,0.1)"
             ]
-                ++ (case tile.event of
-                        None ->
-                            []
-
-                        Appeared ->
-                            [ Css.animationDuration <| Css.ms 100
-                            , Css.animationName <|
-                                Css.Animations.keyframes
-                                    [ ( 0
-                                      , [ Css.Animations.opacity Css.zero
-                                        , Css.Animations.transform [ Css.scale 0 ]
-                                        ]
-                                      )
-                                    , ( 100
-                                      , [ Css.Animations.opacity <| Css.num 100
-                                        , Css.Animations.transform [ Css.scale 1 ]
-                                        ]
-                                      )
-                                    ]
-                            ]
-                   )
+                ++ animations tile
         ]
-        [ Html.div []
-            [ Html.text <|
-                case tile.value of
-                    0 ->
-                        ""
+        [ Html.text <|
+            case tile.value of
+                0 ->
+                    ""
 
-                    _ ->
-                        String.fromInt tile.value
+                _ ->
+                    String.fromInt tile.value
+        ]
+
+
+animations : Tile -> List Css.Style
+animations tile =
+    case tile.event of
+        None ->
+            []
+
+        Appeared ->
+            [ Css.animationDuration <| Css.ms 100
+            , Css.animationName <|
+                Css.Animations.keyframes
+                    [ ( 0
+                      , [ Css.Animations.opacity Css.zero
+                        , Css.Animations.transform [ Css.scale 0 ]
+                        ]
+                      )
+                    , ( 100
+                      , [ Css.Animations.opacity <| Css.num 100
+                        , Css.Animations.transform [ Css.scale 1 ]
+                        ]
+                      )
+                    ]
             ]
-        ]
 
 
 backgroundColor : Tile -> Color.Color
