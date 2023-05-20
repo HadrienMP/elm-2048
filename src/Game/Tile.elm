@@ -37,18 +37,16 @@ view tile =
     Html.div
         [ Attr.class "tile"
         , css <|
-            [ Css.height <| Css.pct 100
-            , Css.width <| Css.pct 100
-            , UI.Style.roundedCorners
+            [ UI.Style.roundedCorners
             , Css.displayFlex
             , Css.alignItems Css.center
             , Css.justifyContent Css.center
             , Css.backgroundColor <| Css.Extra.toCssColor <| backgroundColor tile
             , Css.color <| Css.hex "#fff"
-            , Css.width <| Css.vmin 18
-            , Css.height <| Css.vmin 18
+            , Css.width <| Css.vmin 17
+            , Css.height <| Css.vmin 17
             , Css.textAlign Css.center
-            , Css.fontSize <| Css.vmin 7
+            , Css.fontSize <| Css.vmin 6
             , Css.fontWeight Css.bold
             , Css.property
                 "text-shadow"

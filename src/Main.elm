@@ -2,7 +2,8 @@ port module Main exposing (Model, Msg, main)
 
 import Browser
 import Browser.Navigation
-import Css exposing (margin)
+import Css
+import Css.Global
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attr
 import Pages.Game
@@ -138,7 +139,9 @@ view model =
                 , Css.fontFamily Css.sansSerif
                 ]
             ]
-            [ viewPage model.page |> Html.map GotPageMsg ]
+            [ Css.Global.global [ Css.Global.h1 [ Css.margin Css.zero ] ]
+            , viewPage model.page |> Html.map GotPageMsg
+            ]
             |> Html.toUnstyled
             |> List.singleton
     }

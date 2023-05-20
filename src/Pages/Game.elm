@@ -155,28 +155,16 @@ view grid =
             ]
         ]
         [ Html.h1
-            [ Attr.css <|
-                [ Css.backgroundColor <|
-                    UI.AppTheme.toCss UI.AppTheme.default.solid.surface
-                , Css.padding <| Css.vmin 2
-                , Css.fontSize <| Css.vmin 6
-                , Css.margin Css.zero
-                , UI.Style.roundedCorners
-                , Css.color <| UI.AppTheme.toCss UI.AppTheme.default.on.surface
-                , Css.textShadow4
-                    Css.zero
-                    (Css.vmin -0.5)
-                    Css.zero
-                    (Css.rgba 0 0 0 0.2)
-                , Css.boxShadow4 Css.zero
-                    (Css.vmin 0.6)
+            [ Attr.css
+                [ Css.boxShadow4 Css.zero
+                    (Css.vmin 1)
                     Css.zero
                     (UI.AppTheme.toCss UI.AppTheme.default.solid.shadow)
-                , Css.paddingTop <| Css.vmin 2.6
+                , UI.Style.roundedCorners
+                , Css.maxWidth Css.fitContent
                 ]
             ]
-            [ Html.text "2048"
+            [ Tile.view { value = 2048, event = Tile.None }
             ]
-        , grid
-            |> Grid.view
+        , grid |> Grid.view
         ]
