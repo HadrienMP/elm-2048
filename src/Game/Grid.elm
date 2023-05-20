@@ -134,7 +134,7 @@ affectRandomFace coordinates =
 -- View
 
 
-view : Grid -> Html msg
+view : List (List Tile.Tile) -> Html msg
 view grid =
     Html.div
         [ css

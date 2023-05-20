@@ -4,6 +4,7 @@ import Browser
 import Css
 import Game.Grid as Grid
 import Game.Move as Move
+import Game.Tile as Tile
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attr
 import List.Extra
@@ -30,7 +31,7 @@ main =
 
 
 type alias Model =
-    Grid.Grid
+    List (List Tile.Tile)
 
 
 init : () -> ( Model, Cmd Msg )
@@ -38,14 +39,17 @@ init _ =
     let
         grid =
             Grid.init
+                |> List.map (List.map Tile.normalTile)
     in
-    ( grid, addRandomTile 2 grid )
+    ( grid
+    , addRandomTile 2 grid
+    )
 
 
-addRandomTile : Int -> Grid.Grid -> Cmd Msg
-addRandomTile face grid =
-    Grid.randomTileGenerator face grid
-        |> Random.generate Updated
+addRandomTile : Int -> Model -> Cmd Msg
+addRandomTile count grid =
+    Grid.randomTileGenerator count (grid |> List.map (List.map .value))
+        |> Random.generate RandomTiles
 
 
 
@@ -53,12 +57,12 @@ addRandomTile face grid =
 
 
 type Msg
-    = Updated (List Grid.RandomTile)
+    = RandomTiles (List Grid.RandomTile)
     | Moved Move.Move
     | Swipe String
 
 
-insert : List Grid.RandomTile -> Grid.Grid -> Grid.Grid
+insert : List Grid.RandomTile -> Model -> Model
 insert tiles grid =
     case tiles of
         [] ->
@@ -68,22 +72,33 @@ insert tiles grid =
             insert tail
                 (List.Extra.updateAt tile.coordinates.y
                     (List.Extra.updateAt tile.coordinates.x
-                        (always tile.face)
+                        (always <| Tile.newTile tile.face)
                     )
                     grid
                 )
 
 
+toGrid : Model -> Grid.Grid
+toGrid =
+    List.map (List.map .value)
+
+
+fromGrid : Grid.Grid -> Model
+fromGrid =
+    List.map (List.map Tile.normalTile)
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Updated tiles ->
+        RandomTiles tiles ->
             ( insert tiles model
             , Cmd.none
             )
 
         Moved move ->
-            Grid.handle move model
+            Grid.handle move (toGrid model)
+                |> fromGrid
                 |> toPair
                 |> Tuple.mapSecond (addRandomTile 1)
 
@@ -91,15 +106,21 @@ update msg model =
             case Move.parse direction of
                 Just move ->
                     let
+                        current =
+                            model |> toGrid
+
                         next =
-                            Grid.handle move model
+                            Grid.handle move current
+
+                        nextModel =
+                            next |> fromGrid
                     in
-                    ( next
-                    , if next == model then
+                    ( nextModel
+                    , if next == current then
                         Cmd.none
 
                       else
-                        addRandomTile 1 next
+                        addRandomTile 1 nextModel
                     )
 
                 Nothing ->
@@ -124,7 +145,7 @@ subscriptions =
 -- View
 
 
-view : Grid.Grid -> Html Msg
+view : Model -> Html Msg
 view grid =
     Html.div
         [ Attr.css
@@ -156,5 +177,6 @@ view grid =
             ]
             [ Html.text "2048"
             ]
-        , Grid.view grid
+        , grid
+            |> Grid.view
         ]
